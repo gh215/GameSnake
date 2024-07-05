@@ -1,4 +1,4 @@
-#include "snake_header.h"
+﻿#include "snake_header.h"
 
 void draw(Point point, char symb)
 {
