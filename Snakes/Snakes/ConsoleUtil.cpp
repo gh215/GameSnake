@@ -35,3 +35,21 @@ Direction getDir()
     }
     return dir;
 }
+
+
+void showGameOverMessage()
+{
+    setlocale(LC_ALL, "Russian");
+    system("cls");
+
+    const char* message = "Game Over";
+
+    cout << "\n\n\n";
+    cout << "    +----------+\n";
+    cout << "    |          |\n";
+    cout << "    | Game Over|\n";
+    cout << "    |          |\n";
+    cout << "    +----------+\n";
+
+    cout << "\n\nНажмите любую клавишу для выхода...";
+}
