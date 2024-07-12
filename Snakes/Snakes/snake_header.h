@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum class Direction { up, down, left, right };
+enum class Direction { north, south, west, east };
 
 const int snakeSpeed = 5;
 const int frameDelay = 1000 / snakeSpeed;
@@ -17,16 +17,20 @@ const int DOWN = 80;
 const int LEFT = 75;
 const int RIGHT = 77;
 
+Direction getDir();
+
 struct Point
 {
 	int x;
 	int y;
 };
 
+void drawSymb(Point point, char symb = ' ');
+
 class Snake
 {
 private:
-	Direction direction = Direction::right;
+	Direction direction = Direction::east;
 	list<Point> body;
 	Point cutTail;
 public:
@@ -53,12 +57,12 @@ public:
 	bool checkBorderHit();
 	void draw()
 	{
-		system("cls");
+		snake.draw();
+		drawSymb(lr, ' ');
 	}
 	void snakeMove()
 	{
 		snake.move();
-		snake.draw();
 	}
 	void setSnakeDir(Direction dir)
 	{
@@ -66,5 +70,4 @@ public:
 	};
 };
 
-Direction getDir();
-void draw(Point point, char symb = ' ');
+

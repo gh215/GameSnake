@@ -1,6 +1,6 @@
 ﻿#include "snake_header.h"
 
-void draw(Point point, char symb)
+void drawSymb(Point point, char symb)
 {
     static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD coord = { (SHORT)point.x, (SHORT)point.y };
@@ -10,19 +10,26 @@ void draw(Point point, char symb)
 
 Direction getDir()
 {
-    static Direction dir = Direction::right;
+    static Direction dir = Direction::east;
     if (_kbhit())
     {
         int key = _getch();
-        if (key == ARROW)
+        if (key == LEFT || key == RIGHT)
         {
-            key = _getch();
-            switch (key)
+            switch (dir)
             {
-            case UP: dir = Direction::up; break;
-            case DOWN: dir = Direction::down; break;
-            case LEFT: dir = Direction::left; break;
-            case RIGHT: dir = Direction::right; break;
+            case Direction::north:
+                dir = (key == LEFT) ? Direction::west : Direction::east;
+                break;
+            case Direction::south:
+                dir = (key == LEFT) ? Direction::east : Direction::west;
+                break;
+            case Direction::west:
+                dir = (key == LEFT) ? Direction::south : Direction::north;
+                break;
+            case Direction::east:
+                dir = (key == LEFT) ? Direction::north : Direction::south;
+                break;
             }
         }
     }

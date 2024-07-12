@@ -3,9 +3,9 @@
 void game()
 {
     Board board;
-    board.draw();
     while (true)
     {
+        board.draw();
         board.snakeMove();
         Sleep(frameDelay);
         board.setSnakeDir(getDir());

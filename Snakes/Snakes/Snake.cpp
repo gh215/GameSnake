@@ -6,10 +6,10 @@ void Snake::move()
     Point newHead = body.front();
     switch (direction)
     {
-    case Direction::up: newHead.y--; break;
-    case Direction::down: newHead.y++; break;
-    case Direction::left: newHead.x--; break;
-    case Direction::right: newHead.x++; break;
+    case Direction::north: newHead.y--; break;
+    case Direction::south: newHead.y++; break;
+    case Direction::west: newHead.x--; break;
+    case Direction::east: newHead.x++; break;
     }
     //Добавляем новую голову в начало тела змеи
     body.push_front(newHead);
@@ -22,15 +22,15 @@ void Snake::move()
 void Snake::draw()
 {
     // Стираем хвост
-    ::draw(cutTail, ' ');
+    ::drawSymb(cutTail, ' ');
 
     // Рисуем голову
-    ::draw(body.front(), '#');
+    ::drawSymb(body.front(), '#');
 
     // Рисуем тело. Содаём итератор указывающий на второй элемент тела
     auto it = next(body.begin());
     for (; it != body.end(); ++it)
     {
-        ::draw(*it, '*');
+        ::drawSymb(*it, '*');
     }
 }
