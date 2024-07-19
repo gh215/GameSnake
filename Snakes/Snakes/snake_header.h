@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <Windows.h>
 #include <conio.h>
@@ -19,6 +19,7 @@ const int RIGHT = 77;
 
 Direction getDir();
 
+
 struct Point
 {
 	int x;
@@ -26,6 +27,7 @@ struct Point
 };
 
 void drawSymb(Point point, char symb = ' ');
+void showGameOverMessage();
 
 class Snake
 {
@@ -42,6 +44,10 @@ public:
 		body.push_back({ 25, 15 });
 		body.push_back({ 26, 15 });
 	}
+	Point getHead()
+	{
+		return body.front();
+	}
 	void setDirection(Direction dir) { direction = dir; };
 	void draw();
 	bool checkBodyHit();
@@ -55,6 +61,7 @@ class Board
 	const Point lr{ 50, 30 };
 public:
 	bool checkBorderHit();
+	void drawBorders();
 	void draw()
 	{
 		snake.draw();
@@ -67,7 +74,9 @@ public:
 	void setSnakeDir(Direction dir)
 	{
 		snake.setDirection(dir);
-	};
+	}
+	bool isGameOver()
+	{
+		return checkBorderHit(); //|| snake.checkBodyHit();
+	}
 };
-
-
