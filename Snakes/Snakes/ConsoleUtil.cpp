@@ -8,48 +8,52 @@ void drawSymb(Point point, char symb)
     cout << symb;
 }
 
-Direction getDir()
+Direction getDir(int key)
 {
     static Direction dir = Direction::east;
-    if (_kbhit())
+    if (key == LEFT || key == RIGHT)
     {
-        int key = _getch();
-        if (key == LEFT || key == RIGHT)
+        switch (dir)
         {
-            switch (dir)
-            {
-            case Direction::north:
-                dir = (key == LEFT) ? Direction::west : Direction::east;
-                break;
-            case Direction::south:
-                dir = (key == LEFT) ? Direction::east : Direction::west;
-                break;
-            case Direction::west:
-                dir = (key == LEFT) ? Direction::south : Direction::north;
-                break;
-            case Direction::east:
-                dir = (key == LEFT) ? Direction::north : Direction::south;
-                break;
-            }
+        case Direction::north:
+            dir = (key == LEFT) ? Direction::west : Direction::east;
+            break;
+        case Direction::south:
+            dir = (key == LEFT) ? Direction::east : Direction::west;
+            break;
+        case Direction::west:
+            dir = (key == LEFT) ? Direction::south : Direction::north;
+            break;
+        case Direction::east:
+            dir = (key == LEFT) ? Direction::north : Direction::south;
+            break;
         }
     }
     return dir;
 }
 
-
-void showGameOverMessage()
+list<Point> createSnakeBody(Point head, Direction dir, int size)
 {
-    setlocale(LC_ALL, "Russian");
-    system("cls");
-
-    const char* message = "Game Over";
-
-    cout << "\n\n\n";
-    cout << "    +----------+\n";
-    cout << "    |          |\n";
-    cout << "    | Game Over|\n";
-    cout << "    |          |\n";
-    cout << "    +----------+\n";
-
-    cout << "\n\nНажмите любую клавишу для выхода...";
+    list<Point> body;
+    for (int i = 0; i < size; i++)
+    {
+        body.push_back(head);
+        switch (dir)
+        {
+        case Direction::east:
+            head.x--;
+            break;
+        case Direction::west:
+            head.x++;
+            break;
+        case Direction::north:
+            head.y++;
+            break;
+        case Direction::south:
+            head.y--;
+            break;
+        }
+    }
+    return body;
 }
+

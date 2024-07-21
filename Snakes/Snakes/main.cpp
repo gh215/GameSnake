@@ -4,21 +4,19 @@ void game()
 {
     Board board;
     board.drawBorders();
-    while (true)
+    bool paused = false;
+    while (!board.isGameOver())
     {
+        board.processInput();
         board.draw();
         board.snakeMove();
-        if (board.checkBorderHit())
-        {
-            showGameOverMessage();
-            break;
-        }
         Sleep(frameDelay);
-        board.setSnakeDir(getDir());
     }
+    board.showGameOverMessage();
 }
 
 int main()
 {
     game();
 }
+
