@@ -34,3 +34,21 @@ void Snake::draw()
         ::drawSymb(*it, '*');
     }
 }
+
+bool Snake::checkBodyHit()
+{
+    Point head = body.front();
+
+    // Итератор, указывающий на второй элемент тела змеи
+    auto it = next(body.begin());
+
+    for (; it != body.end(); ++it)
+    {
+        // Если координаты головы совпадают с координатами любой части тела
+        if (head.x == it->x && head.y == it->y)
+        {
+            return true;
+        }
+    }
+    return false;
+}

@@ -12,13 +12,12 @@ const int snakeSpeed = 5;
 const int frameDelay = 1000 / snakeSpeed;
 
 const int ARROW = 224;
-const int UP = 72;
-const int DOWN = 80;
 const int LEFT = 75;
 const int RIGHT = 77;
+const int PAUSE_LOWER = 112;
+const int PAUSE_UPPER = 80;
 
-Direction getDir();
-
+Direction getDir(int key);
 
 struct Point
 {
@@ -26,8 +25,8 @@ struct Point
 	int y;
 };
 
+list<Point> createSnakeBody(Point head, Direction dir, int size);
 void drawSymb(Point point, char symb = ' ');
-void showGameOverMessage();
 
 class Snake
 {
@@ -38,11 +37,9 @@ private:
 public:
 	Snake() : cutTail{ 0, 0 }
 	{
-		body.push_back({ 22, 15 });
-		body.push_back({ 23, 15 });
-		body.push_back({ 24, 15 });
-		body.push_back({ 25, 15 });
-		body.push_back({ 26, 15 });
+		Point startHead = { 22, 15 };
+		direction = Direction::east;
+		body = createSnakeBody(startHead, direction, 10);
 	}
 	Point getHead()
 	{
@@ -58,10 +55,17 @@ class Board
 {
 	Snake snake;
 	const Point ul{ 0, 0 };
-	const Point lr{ 50, 30 };
+	const Point lr{ 50, 20 };
+	void checkPause();
 public:
 	bool checkBorderHit();
 	void drawBorders();
+	void processInput();
+	void boardMessage(string message);
+	void showGameOverMessage();
+	void showPauseMessage();
+	void clearPauseMessage();
+	bool pauseGame(Board& board);
 	void draw()
 	{
 		snake.draw();
@@ -77,6 +81,9 @@ public:
 	}
 	bool isGameOver()
 	{
-		return checkBorderHit(); //|| snake.checkBodyHit();
+		return checkBorderHit() || snake.checkBodyHit();
 	}
 };
+
+void flush();
+void checkPause(Board& board);
