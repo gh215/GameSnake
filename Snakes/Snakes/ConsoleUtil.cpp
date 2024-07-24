@@ -32,6 +32,14 @@ Direction getDir(int key)
     return dir;
 }
 
+void flush()
+{
+    while (_kbhit())
+    {
+        _getch();
+    }
+}
+
 list<Point> createSnakeBody(Point head, Direction dir, int size)
 {
     list<Point> body;

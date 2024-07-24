@@ -85,4 +85,5 @@ public:
 	}
 };
 
+void flush();
 void checkPause(Board& board);

@@ -123,5 +123,6 @@ void Board::processInput()
             setSnakeDir(getDir(key));
         }
     }
+    flush();
 }
 
