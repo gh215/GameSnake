@@ -4,11 +4,14 @@ void game()
 {
     Board board;
     board.drawBorders();
-    bool paused = false;
+    board.spawnFood();
+
     while (!board.isGameOver())
     {
         board.processInput();
+        board.updateFood();
         board.draw();
+        board.checkFoodCollision();
         board.snakeMove();
         Sleep(frameDelay);
     }

@@ -16,6 +16,7 @@ const int LEFT = 75;
 const int RIGHT = 77;
 const int PAUSE_LOWER = 112;
 const int PAUSE_UPPER = 80;
+const int FOOD_LIFETIME = 50;
 
 Direction getDir(int key);
 
@@ -49,6 +50,27 @@ public:
 	void draw();
 	bool checkBodyHit();
 	void move();
+	void grow();
+	bool isOnSnake(Point p);
+};
+
+class Food
+{
+private:
+	Point coord;
+	char look;
+	int lifetime;
+
+public:
+	Food(Point p, int lf = FOOD_LIFETIME, char l = '@') : coord(p), look(l), lifetime(lf) {}
+
+	int tick() { return --lifetime; }
+
+	Point getCoords() const { return coord; }
+
+	void draw() { drawSymb(coord, look); }
+
+	~Food() { drawSymb(coord, ' '); }
 };
 
 class Board
@@ -57,6 +79,8 @@ class Board
 	const Point ul{ 0, 0 };
 	const Point lr{ 50, 20 };
 	void checkPause();
+	list<Food> food;
+	int foodCounter;
 public:
 	bool checkBorderHit();
 	void drawBorders();
@@ -66,9 +90,17 @@ public:
 	void showPauseMessage();
 	void clearPauseMessage();
 	bool pauseGame(Board& board);
+	void updateFood();
+	bool checkFoodCollision();
+	void spawnFood();
+	Point getRandomPoint(const Point& ul, const Point& lr);
 	void draw()
 	{
 		snake.draw();
+		for (auto& f : food) 
+		{
+			f.draw();
+		}
 		drawSymb(lr, ' ');
 	}
 	void snakeMove()
