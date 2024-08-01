@@ -52,3 +52,22 @@ bool Snake::checkBodyHit()
     }
     return false;
 }
+
+void Snake::grow()
+{
+    body.push_back(cutTail);
+}
+
+//Проверяет, находится ли данная точка на теле змеи
+bool Snake::isOnSnake(Point p)  
+{
+    for (const auto& segment : body) 
+    {
+        //Если координаты точки совпадают с любым сегментом
+        if (segment.x == p.x && segment.y == p.y) 
+        {
+            return true;
+        }
+    }
+    return false;
+}

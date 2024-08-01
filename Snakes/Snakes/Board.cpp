@@ -126,3 +126,68 @@ void Board::processInput()
     flush();
 }
 
+void Board::updateFood() 
+{
+    for (auto it = food.begin(); it != food.end();) 
+    {
+        // уменьшает время жизни еды и возвращает оставшееся время.
+        // Если нет, итератор переходит к следующему элементу.
+        if (it->tick() <= 0) 
+        {
+            it = food.erase(it);
+        }
+        else 
+        {
+            ++it;
+        }
+    }
+
+    //foodCounter увеличивается на 1 каждый раз при вызове функции.
+    //Если foodCounter достигает 20, создается новая еда и счетчик сбрасывается.
+    if (++foodCounter >= 20) // Спавним новую еду каждые 20 тиков
+    { 
+        spawnFood();
+        foodCounter = 0;
+    }
+}
+
+//Проверяет, столкнулась ли голова змеи с едой.
+bool Board::checkFoodCollision() 
+{
+    Point head = snake.getHead();
+    for (auto it = food.begin(); it != food.end(); ++it) 
+    {
+        //Если координаты головы совпадают с координатами еды
+        if (head.x == it->getCoords().x && head.y == it->getCoords().y) 
+        {
+            snake.grow();
+            food.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
+// Генерирует случайную точку внутри игрового поля.
+Point Board::getRandomPoint(const Point& ul, const Point& lr)
+{
+    return
+    {
+        ul.x + 1 + rand() % (lr.x - ul.x - 1),
+        ul.y + 1 + rand() % (lr.y - ul.y - 1)
+    };
+}
+
+//Создает новую еду на случайной позиции
+void Board::spawnFood() 
+{
+    Point p;
+    do 
+    {
+        p = getRandomPoint(ul, lr);
+    } 
+    //Проверяет, не находится ли эта точка на теле змеи).
+    while (snake.isOnSnake(p));
+
+    food.push_back(Food(p));
+}
