@@ -65,7 +65,7 @@ void Board::boardMessage(string message)
         drawSymb({ messageX + static_cast<int>(i), messageY }, message[i]);
     }
 
-    COORD endPosition = { 0, (SHORT)(lr.y + 1) };
+    COORD endPosition = { 0, (SHORT)(lr.y + 10) };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), endPosition);
 }
 
@@ -161,6 +161,7 @@ bool Board::checkFoodCollision()
         if (head.x == it->getCoords().x && head.y == it->getCoords().y) 
         {
             snake.grow();
+            updateScore(1);
             food.erase(it);
             return true;
         }
@@ -190,4 +191,33 @@ void Board::spawnFood()
     while (snake.isOnSnake(p));
 
     food.push_back(Food(p));
+}
+
+void Board::drawStats()
+{
+    COORD statPosition = { (SHORT)(ul.x), (SHORT)(lr.y + 1) };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), statPosition);
+    cout << "Lives: " << lives << " Score: " << score << "    ";
+}
+
+void Board::snakeMove()
+{
+    snake.move();
+    if (checkBorderHit() || snake.checkBodyHit())
+    {
+        loseLife();
+        if (lives > 0)
+        {
+            for (int y = ul.y + 1; y < lr.y; ++y)
+            {
+                for (int x = ul.x + 1; x < lr.x; ++x)
+                {
+                    drawSymb({ x, y }, ' ');
+                }
+            }
+            snake = Snake();
+            drawBorders();
+            draw();
+        }
+    }
 }
