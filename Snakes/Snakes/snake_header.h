@@ -79,9 +79,12 @@ class Board
 	const Point ul{ 0, 0 };
 	const Point lr{ 50, 20 };
 	void checkPause();
+	int lives;
+	int score;
 	list<Food> food;
 	int foodCounter;
 public:
+	Board() : lives(3), score(0), foodCounter(0) {}
 	bool checkBorderHit();
 	void drawBorders();
 	void processInput();
@@ -90,9 +93,15 @@ public:
 	void showPauseMessage();
 	void clearPauseMessage();
 	bool pauseGame(Board& board);
+	void drawStats();
 	void updateFood();
 	bool checkFoodCollision();
 	void spawnFood();
+	void moveCursorToBottom()
+	{
+		COORD endPosition = { 0, (SHORT)(lr.y + 2) };
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), endPosition);
+	}
 	Point getRandomPoint(const Point& ul, const Point& lr);
 	void draw()
 	{
@@ -103,17 +112,22 @@ public:
 		}
 		drawSymb(lr, ' ');
 	}
-	void snakeMove()
-	{
-		snake.move();
-	}
+	void snakeMove();
 	void setSnakeDir(Direction dir)
 	{
 		snake.setDirection(dir);
 	}
+	void updateScore(int points)
+	{
+		score += points;
+	}
+	void loseLife()
+	{
+		if (lives > 0) lives--;
+	}
 	bool isGameOver()
 	{
-		return checkBorderHit() || snake.checkBodyHit();
+		return lives == 0 || checkBorderHit() || snake.checkBodyHit();
 	}
 };
 
