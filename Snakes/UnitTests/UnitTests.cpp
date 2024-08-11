@@ -48,6 +48,7 @@ namespace UnitTests
             }
         }
 
+
         TEST_METHOD(TestGetHead)
         {
             Snake snake;
@@ -82,10 +83,22 @@ namespace UnitTests
         {
             Snake snake;
             snake.move();
+
             Point head = snake.getHead();
+
             Assert::AreEqual(head.x, 23);
+            Assert::AreEqual(head.y, 15);
         }
 
+        TEST_METHOD(TestGrow)
+        {
+            Snake snake;
+            Point tail = { 22, 15 };
+            snake.move();
+            snake.grow();
+            snake.move();
+            Assert::IsTrue(snake.isOnSnake(tail));
+        }
         TEST_METHOD(TestIsOnSnake)
         {
             Snake snake;
@@ -93,29 +106,63 @@ namespace UnitTests
             Assert::IsTrue(snake.isOnSnake(head));
         }
 
-        TEST_METHOD(TestFoodTick)
+        TEST_METHOD(TestFoodConstructor)
         {
-            Food food({ 0, 0 }, 50);
+            Point position = { 5, 5 };
+            int lifetime = 10;
+            char look = '@';
+            Food food(position, lifetime, look);
 
-            Assert::AreEqual(49, food.tick());
-            for (int i = 0; i < 48; i++) food.tick();
+            Assert::AreEqual(position.x, food.getCoords().x);
+            Assert::AreEqual(position.y, food.getCoords().y);
+        }
+        TEST_METHOD(TestTick)
+        {
+            Food food({ 0, 0 }, 5);
+            Assert::AreEqual(4, food.tick());
+            Assert::AreEqual(3, food.tick());
+            Assert::AreEqual(2, food.tick());
             Assert::AreEqual(1, food.tick());
             Assert::AreEqual(0, food.tick());
+            Assert::AreEqual(-1, food.tick()); 
         }
 
-        TEST_METHOD(TestCheckBorderHit)
+        TEST_METHOD(TestSnakeMove_Simple)
+        {
+            Snake snake;
+            Point initialHead = snake.getHead();
+
+            snake.move();
+
+            Point newHead = snake.getHead();
+            Assert::AreEqual(initialHead.x + 1, newHead.x);
+            Assert::AreEqual(initialHead.y, newHead.y);
+        }
+
+        TEST_METHOD(TestSpawnFood)
+        {
+            Board board;
+            int initialFoodCount = 0;
+
+            board.spawnFood();
+            Assert::AreEqual(initialFoodCount + 1, 1);
+
+            board.spawnFood();
+            Assert::AreEqual(initialFoodCount + 2, 2);
+        }
+
+        TEST_METHOD(TestIsGameOver)
         {
             Board board;
 
-            board.setSnakeDir(Direction::east);
-            for (int i = 0; i < 25; i++) board.snakeMove();
-            Assert::IsFalse(board.checkBorderHit());
+            for (int i = 0; i < 3; ++i)
+            {
+                board.snakeMove();
+                board.snakeMove(); 
+                board.loseLife();
+            }
 
-            // Двигаем змею к правой границе
-            for (int i = 0; i < 25; i++) board.snakeMove();
-            Assert::IsTrue(board.checkBorderHit());
+            Assert::IsTrue(board.isGameOver());
         }
-
-
 	};
 }

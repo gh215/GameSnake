@@ -8,30 +8,6 @@ void drawSymb(Point point, char symb)
     cout << symb;
 }
 
-Direction getDir(int key)
-{
-    static Direction dir = Direction::east;
-    if (key == LEFT || key == RIGHT)
-    {
-        switch (dir)
-        {
-        case Direction::north:
-            dir = (key == LEFT) ? Direction::west : Direction::east;
-            break;
-        case Direction::south:
-            dir = (key == LEFT) ? Direction::east : Direction::west;
-            break;
-        case Direction::west:
-            dir = (key == LEFT) ? Direction::south : Direction::north;
-            break;
-        case Direction::east:
-            dir = (key == LEFT) ? Direction::north : Direction::south;
-            break;
-        }
-    }
-    return dir;
-}
-
 void flush()
 {
     while (_kbhit())
@@ -65,3 +41,11 @@ list<Point> createSnakeBody(Point head, Direction dir, int size)
     return body;
 }
 
+Point getRandomPoint(const Point& ul, const Point& lr)
+{
+    return
+    {
+        ul.x + 1 + rand() % (lr.x - ul.x - 1),
+        ul.y + 1 + rand() % (lr.y - ul.y - 1)
+    };
+}

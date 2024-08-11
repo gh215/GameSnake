@@ -20,7 +20,7 @@ bool Board::checkBorderHit()
     return (head.x <= ul.x || head.x >= lr.x || head.y <= ul.y || head.y >= lr.y);
 }
 
-void Board::boardMessage(string message)
+void Board::boardMessage(string message, string subMessage)
 {
     // Размеры рамки
     const int messageWidth = 14;
@@ -81,6 +81,14 @@ void Board::showGameOverMessage()
     boardMessage(message);
 }
 
+
+void Board::showLostLifeMessage()
+{
+    string message = "LIFE LOST";
+    boardMessage(message);
+    _getch();
+}
+
 void Board::clearPauseMessage()
 {
     const int messageWidth = 14;
@@ -120,7 +128,7 @@ void Board::processInput()
         else if (key == ARROW)
         {
             key = _getch();
-            setSnakeDir(getDir(key));
+            snake.updateDirection(key);;
         }
     }
     flush();
@@ -169,16 +177,6 @@ bool Board::checkFoodCollision()
     return false;
 }
 
-// Генерирует случайную точку внутри игрового поля.
-Point Board::getRandomPoint(const Point& ul, const Point& lr)
-{
-    return
-    {
-        ul.x + 1 + rand() % (lr.x - ul.x - 1),
-        ul.y + 1 + rand() % (lr.y - ul.y - 1)
-    };
-}
-
 //Создает новую еду на случайной позиции
 void Board::spawnFood() 
 {
@@ -206,6 +204,7 @@ void Board::snakeMove()
     if (checkBorderHit() || snake.checkBodyHit())
     {
         loseLife();
+        showLostLifeMessage();
         if (lives > 0)
         {
             for (int y = ul.y + 1; y < lr.y; ++y)
@@ -216,7 +215,7 @@ void Board::snakeMove()
                 }
             }
             snake = Snake();
-            drawBorders();
+            flush();
             draw();
         }
     }

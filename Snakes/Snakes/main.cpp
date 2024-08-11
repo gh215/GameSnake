@@ -9,11 +9,12 @@ void game()
     while (!board.isGameOver())
     {
         board.processInput();
-        board.updateFood();
-        board.draw();
+        board.updateFood();         
+        board.snakeMove();       
+        board.draw();        
         board.drawStats();
         board.checkFoodCollision();
-        board.snakeMove();
+
         Sleep(frameDelay);
     }
     board.moveCursorToBottom();
@@ -23,6 +24,5 @@ void game()
 int main()
 {
     game();
-    system("pause >nul");
 }
 

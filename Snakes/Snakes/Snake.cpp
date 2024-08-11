@@ -71,3 +71,25 @@ bool Snake::isOnSnake(Point p)
     }
     return false;
 }
+
+void Snake::updateDirection(int key)
+{
+    if (key == LEFT || key == RIGHT)
+    {
+        switch (direction)
+        {
+        case Direction::north:
+            direction = (key == LEFT) ? Direction::west : Direction::east;
+            break;
+        case Direction::south:
+            direction = (key == LEFT) ? Direction::east : Direction::west;
+            break;
+        case Direction::west:
+            direction = (key == LEFT) ? Direction::south : Direction::north;
+            break;
+        case Direction::east:
+            direction = (key == LEFT) ? Direction::north : Direction::south;
+            break;
+        }
+    }
+}

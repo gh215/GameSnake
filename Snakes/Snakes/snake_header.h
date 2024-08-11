@@ -46,7 +46,11 @@ public:
 	{
 		return body.front();
 	}
-	void setDirection(Direction dir) { direction = dir; };
+	Direction dir = Direction::east;
+	Direction getDir(int key);
+	void setDirection(Direction dir) { direction = dir; }
+	void updateDirection(int key);
+	void resetDirection() { direction = Direction::east; }
 	void draw();
 	bool checkBodyHit();
 	void move();
@@ -60,9 +64,12 @@ private:
 	Point coord;
 	char look;
 	int lifetime;
-
 public:
 	Food(Point p, int lf = FOOD_LIFETIME, char l = '@') : coord(p), look(l), lifetime(lf) {}
+
+	void spawnFood(Snake& snake, const Point& ul, const Point& lr);
+	void updateFood();
+	bool checkFoodCollision(Snake& snake);
 
 	int tick() { return --lifetime; }
 
@@ -88,10 +95,11 @@ public:
 	bool checkBorderHit();
 	void drawBorders();
 	void processInput();
-	void boardMessage(string message);
+	void boardMessage(string message, string subMessage = "");
 	void showGameOverMessage();
 	void showPauseMessage();
 	void clearPauseMessage();
+	void showLostLifeMessage();
 	bool pauseGame(Board& board);
 	void drawStats();
 	void updateFood();
@@ -102,7 +110,6 @@ public:
 		COORD endPosition = { 0, (SHORT)(lr.y + 2) };
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), endPosition);
 	}
-	Point getRandomPoint(const Point& ul, const Point& lr);
 	void draw()
 	{
 		snake.draw();
@@ -127,9 +134,10 @@ public:
 	}
 	bool isGameOver()
 	{
-		return lives == 0 || checkBorderHit() || snake.checkBodyHit();
+		return lives == 0;
 	}
 };
 
+Point getRandomPoint(const Point& ul, const Point& lr);
 void flush();
 void checkPause(Board& board);
