@@ -20,7 +20,7 @@ bool Board::checkBorderHit()
     return (head.x <= ul.x || head.x >= lr.x || head.y <= ul.y || head.y >= lr.y);
 }
 
-void Board::boardMessage(string message)
+void Board::boardMessage(string message, string subMessage)
 {
     // Размеры рамки
     const int messageWidth = 14;
@@ -65,7 +65,7 @@ void Board::boardMessage(string message)
         drawSymb({ messageX + static_cast<int>(i), messageY }, message[i]);
     }
 
-    COORD endPosition = { 0, (SHORT)(lr.y + 1) };
+    COORD endPosition = { 0, (SHORT)(lr.y + 10) };
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), endPosition);
 }
 
@@ -79,6 +79,14 @@ void Board::showGameOverMessage()
 {
     string message = "GAME OVER";
     boardMessage(message);
+}
+
+
+void Board::showLostLifeMessage()
+{
+    string message = "LIFE LOST";
+    boardMessage(message);
+    _getch();
 }
 
 void Board::clearPauseMessage()
@@ -120,7 +128,7 @@ void Board::processInput()
         else if (key == ARROW)
         {
             key = _getch();
-            setSnakeDir(getDir(key));
+            snake.updateDirection(key);;
         }
     }
     flush();
@@ -161,21 +169,12 @@ bool Board::checkFoodCollision()
         if (head.x == it->getCoords().x && head.y == it->getCoords().y) 
         {
             snake.grow();
+            updateScore(1);
             food.erase(it);
             return true;
         }
     }
     return false;
-}
-
-// Генерирует случайную точку внутри игрового поля.
-Point Board::getRandomPoint(const Point& ul, const Point& lr)
-{
-    return
-    {
-        ul.x + 1 + rand() % (lr.x - ul.x - 1),
-        ul.y + 1 + rand() % (lr.y - ul.y - 1)
-    };
 }
 
 //Создает новую еду на случайной позиции
@@ -190,4 +189,34 @@ void Board::spawnFood()
     while (snake.isOnSnake(p));
 
     food.push_back(Food(p));
+}
+
+void Board::drawStats()
+{
+    COORD statPosition = { (SHORT)(ul.x), (SHORT)(lr.y + 1) };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), statPosition);
+    cout << "Lives: " << lives << " Score: " << score << "    ";
+}
+
+void Board::snakeMove()
+{
+    snake.move();
+    if (checkBorderHit() || snake.checkBodyHit())
+    {
+        loseLife();
+        showLostLifeMessage();
+        if (lives > 0)
+        {
+            for (int y = ul.y + 1; y < lr.y; ++y)
+            {
+                for (int x = ul.x + 1; x < lr.x; ++x)
+                {
+                    drawSymb({ x, y }, ' ');
+                }
+            }
+            snake = Snake();
+            flush();
+            draw();
+        }
+    }
 }
